@@ -1,9 +1,12 @@
 FROM quay.io/somespider/python
 
 # Install python dependencies
-ADD 	requirements.txt requirements.txt
-RUN 	pip install -r requirements.txt
+ADD 	requirements.txt /app/requirements.txt
+RUN 	pip install -r /app/requirements.txt
 
+ADD 	. /app/src/
+
+WORKDIR /app/src
 
 # Run app
-CMD ["/bin/bash", "start.sh"]
+CMD [“python“, “fb_counter.py”]
