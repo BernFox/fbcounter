@@ -1,0 +1,3 @@
+RABBITMQ_URI=amqp://kaqsfgjd:LtpjQjpOk4ecWqfke23NI3cG9Esmu3uh@hyena.rmq.cloudamqp.com:5672/kaqsfgjd
+REDIS_HOST=dover.somespider.com
+REDIS_PORT=49195

@@ -5,7 +5,7 @@ import redis
 import requests
 
 redis_name = 'test_ids'
-r = redis.StrictRedis(host='localhost',port=6379)
+r = redis.StrictRedis(host='dover.somespider.com',port=49195)
 
 print "Getting data from the butler..."
 data = requests.get("http://butler.cafe.com/stories?user=91").json()

@@ -1,25 +1,29 @@
 #!/usr/bin/python
 
-print "does this work in the container???"
-print "does this work in the container???"
-print "does this work in the container???"
-print "does this work in the container???"
-print "does this work in the container???"
+#print "\ndoes this work in the container???"
 
 import redis 
 import requests
 import datetime
 import time
 import pika
+import logging
+import os
 
-print "does this work in the container???"
-print "does this work in the container???"
-print "does this work in the container???"
-print "does this work in the container???"
-
-r = redis.StrictRedis(host='localhost',port=6379)
+#print os.environ['RABBITMQ_URI']
+#print "Ok, we get past the imports......\n"
+rabbit = os.environ['RABBITMQ_URI']
+redis_host = os.environ['REDIS_HOST']
+redis_port = int(os.environ['REDIS_PORT'])
 redis_name = 'test_ids'
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+
+
+print redis_host
+print redis_port
+
+logging.basicConfig()
+r = redis.StrictRedis(host=redis_host, port=redis_port)
+connection = pika.BlockingConnection(pika.URLParameters(rabbit))
 channel = connection.channel()
 channel.queue_declare(queue='events.shareaccounts.fb')
 
@@ -40,6 +44,7 @@ def fb_query(cat, slug):
 while True:
 
 	print "Popping item from Redis"
+	#print r.ping()
 	current = r.lpop(redis_name)
 	butler_cur = butler(current)
 
@@ -55,7 +60,7 @@ while True:
 	print fb_data
 
 	print "Sending message to RabbitMQ..."
-	channel.basic_publish(exchange='', routing_key='events.shareaccounts.fb', body='fb_data')
+	channel.basic_publish(exchange='', routing_key='events.shareaccounts.fb', body=str(fb_data))
 
 	r.rpushx(redis_name,current)
 	print "Item pushed back to Redis\n"
