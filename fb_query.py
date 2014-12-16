@@ -1,11 +1,21 @@
 #!/usr/bin/python
 
+print "does this work in the container???"
+print "does this work in the container???"
+print "does this work in the container???"
+print "does this work in the container???"
+print "does this work in the container???"
+
 import redis 
 import requests
 import datetime
 import time
 import pika
 
+print "does this work in the container???"
+print "does this work in the container???"
+print "does this work in the container???"
+print "does this work in the container???"
 
 r = redis.StrictRedis(host='localhost',port=6379)
 redis_name = 'test_ids'
