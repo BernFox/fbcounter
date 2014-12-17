@@ -9,7 +9,7 @@ ADD 	. /app/src/
 WORKDIR /app/src
 
 #test
-RUN echo 'TEST'
+#RUN echo 'TEST'
 
 # Run app
 CMD ["python", "fb_query.py"]

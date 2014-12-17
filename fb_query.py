@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import redis 
 import requests
 import datetime
@@ -8,7 +7,6 @@ import time
 import pika
 import logging
 import os
-
 
 
 class fbcounter():
@@ -21,7 +19,6 @@ class fbcounter():
 	for data concerning the number of shares, likes, and comments each story has. This is then sent 
 	to RabbitMQ to be persisted with redshift.
 	"""
-
 
 	#Uncomment out the line below for local testing, and comment out the os.env line below that. 
 	#rabbit = 'amqp://kaqsfgjd:LtpjQjpOk4ecWqfke23NI3cG9Esmu3uh@hyena.rmq.cloudamqp.com:5672/kaqsfgjd'
@@ -73,6 +70,7 @@ class fbcounter():
 			slug = butler_cur['slug']
 
 			fb_data = self.fb_query(category,slug)
+			fb_data['story_id'] = current
 			fb_data['datetime'] = str(datetime.datetime.now())
 
 			print "Current:"
@@ -89,7 +87,7 @@ class fbcounter():
 
 if __name__ == '__main__':
 	redis_name = 'test_ids'
-	rab_name = 'events.shareaccounts.fb'
+	rab_name = 'events.share.accounts.fb'
 
 	test = fbcounter(redis_name, rab_name)
 	print test.redis_name
