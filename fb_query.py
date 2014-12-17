@@ -7,6 +7,7 @@ import time
 import pika
 import logging
 import os
+import json
 
 
 class fbcounter():
@@ -74,10 +75,10 @@ class fbcounter():
 			fb_data['datetime'] = str(datetime.datetime.now())
 
 			print "Current:"
-			print fb_data
+			print str(fb_data)
 
 			print "Sending message to RabbitMQ..."
-			self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=str(fb_data))
+			self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
 
 			self.r.rpushx(redis_name,current)
 			print "Item pushed back to Redis\n"
@@ -91,7 +92,7 @@ if __name__ == '__main__':
 
 	test = fbcounter(redis_name, rab_name)
 	print test.redis_name
-	test.collect()
+	test.collect('topics')
 
 
 
