@@ -90,6 +90,7 @@ class fbcounter():
 				time.sleep(2)
 		
 		except (KeyboardInterrupt, SystemExit, ValueError, Exception):
+			go = False
 			connection.close()
 
 if __name__ == '__main__':
@@ -98,6 +99,7 @@ if __name__ == '__main__':
 	rab_name = 'events.share.accounts.fb'
 
 	test = fbcounter(redis_name, rab_name)
+	#test.get_story_ids()
 	test.collect()
 
 

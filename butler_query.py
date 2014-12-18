@@ -15,4 +15,4 @@ ids = [item['id'] for item in data]
 print "Pushing data to redis..."
 map(lambda x: r.rpush(redis_name, x), ids)
 
-r.persist(redis)
+r.persist(redis_name)
