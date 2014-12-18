@@ -20,3 +20,5 @@ then use 'docker kill [id]'.
 
 This must be done or else this will just stack up connections to RabbitMQ, and once the 
 max connections have been made, new connections will be denied. 
+
+-Removed the env directory, you'll need this to test locally. Or you can uncomment some lines in the code. 
