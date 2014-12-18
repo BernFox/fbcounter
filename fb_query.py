@@ -71,7 +71,7 @@ class fbcounter():
 				#print r.ping()
 				current = self.r.rpoplpush(self.redis_name,self.redis_name)
 				if current:
-                    self.logger.debug("Process Story {}".format(current))
+					self.logger.debug("Process Story {}".format(current))
 					butler_cur = self.butler(current)
 
 					category = butler_cur['section']['term']
