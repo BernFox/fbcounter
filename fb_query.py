@@ -100,7 +100,7 @@ if __name__ == '__main__':
                   '-30s %(lineno) -5d: %(message)s')
 	logging.basicConfig(filename=os.getenv('LOGFILE'), format=log_format, level=os.getenv('LOGLEVEL'))
 	
-	redis_name = 'test_ids'
+	redis_name = 'stories:fbcounts:queue'
 	rab_name = 'events.share.accounts.fb'
 
 	test = fbcounter(redis_name, rab_name)
