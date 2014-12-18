@@ -70,24 +70,28 @@ class fbcounter():
 				#print "Popping item from Redis"
 				#print r.ping()
 				current = self.r.lpop(self.redis_name)
-				butler_cur = self.butler(current)
+				if current:
+					butler_cur = self.butler(current)
 
-				category = butler_cur['section']['term']
-				slug = butler_cur['slug']
+					category = butler_cur['section']['term']
+					slug = butler_cur['slug']
 
-				fb_data = self.fb_query(category,slug)
-				fb_data['story'] = current
-				fb_data['datetime'] = str(datetime.datetime.now())
+					fb_data = self.fb_query(category,slug)
+					fb_data['story'] = current
+					fb_data['datetime'] = str(datetime.datetime.now())
 
-				#print "Current:"
-				self.logger.debug(json.dumps(fb_data))
+					#print "Current:"
+					#print json.dumps(fb_data)
+					self.logger.debug(json.dumps(fb_data))
 
-				#print "Sending message to RabbitMQ..."
-				self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
+					#print "Sending message to RabbitMQ..."
+					self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
 
-				self.r.rpushx(redis_name,current)
-				#print "Item pushed back to Redis\n"
-				time.sleep(2)
+					self.r.rpushx(redis_name,current)
+					#print "Item pushed back to Redis\n"
+					time.sleep(2)
+				else:
+					self.logger.info("Redis queue is empty!")
 		
 		except (KeyboardInterrupt, SystemExit, ValueError, Exception):
 			self.logger.exception("Critical error! exiting while loop...")
