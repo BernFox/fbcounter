@@ -69,7 +69,7 @@ class fbcounter():
 
 				#print "Popping item from Redis"
 				#print r.ping()
-				current = self.r.lpop(self.redis_name)
+				current = self.r.rpoplpush(self.redis_name,self.redis_name)
 				if current:
 					butler_cur = self.butler(current)
 
@@ -80,14 +80,14 @@ class fbcounter():
 					fb_data['story'] = current
 					fb_data['datetime'] = str(datetime.datetime.now())
 
-					#print "Current:"
-					#print json.dumps(fb_data)
+					print "Current:"
+					print json.dumps(fb_data)
 					self.logger.debug(json.dumps(fb_data))
 
 					#print "Sending message to RabbitMQ..."
 					self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
 
-					self.r.rpushx(redis_name,current)
+					#self.r.rpushx(redis_name,current)
 					#print "Item pushed back to Redis\n"
 					time.sleep(2)
 				else:
@@ -105,6 +105,7 @@ if __name__ == '__main__':
 	logging.basicConfig(filename=os.getenv('LOGFILE'), format=log_format, level=os.getenv('LOGLEVEL'))
 	
 	redis_name = 'stories:fbcounts:queue'
+	#redis_name = 'test_ids'
 	rab_name = 'events.share.accounts.fb'
 
 	test = fbcounter(redis_name, rab_name)
