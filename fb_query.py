@@ -89,7 +89,7 @@ class fbcounter():
 				print "Item pushed back to Redis\n"
 				time.sleep(2)
 		
-		except (KeyboardInterrupt, SystemExit, ValueError):
+		except (KeyboardInterrupt, SystemExit, ValueError, Exception):
 			connection.close()
 
 if __name__ == '__main__':
