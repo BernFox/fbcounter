@@ -5,6 +5,7 @@
 -------------------------
 
 Run the following to build the fbcounter container:
+
 docker build -t quay.io/somespider/fbcounter .
 
 
@@ -12,5 +13,6 @@ docker build -t quay.io/somespider/fbcounter .
 ------------------------
 
 To run the container:
+
 docker run --env-file env/local.env -v /home/core/spider/fbcounter -t quay.io/somespider/fbcounter
 
