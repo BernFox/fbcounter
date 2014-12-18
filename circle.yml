@@ -1,0 +1,25 @@
+machine:
+  services:
+    - docker
+
+checkout:
+  post:
+    - git clone git@github.com:somespider/ops.git .ops
+
+dependencies:
+  cache_directories:
+    - ~/bin
+  override:
+    - .ops/ci/prepare
+    - .ops/ci/build
+
+test:
+  override:
+   - .ops/ci/test python --version
+
+deployment:
+  dynamic:
+    branch: /.*/
+    commands:
+      - .ops/ci/push
+      - .ops/ci/deploy
