@@ -41,7 +41,7 @@ class fbcounter():
 		
 		self.redis_name = red_name
 		self.rab_name = rab_name
-		self.channel.queue_declare(queue=rab_name)
+		#self.channel.queue_declare(queue=rab_name)
 		
 
 	def butler(self, cur_id):
@@ -57,42 +57,48 @@ class fbcounter():
 		else:
 			print "List has length longer than 1, please inspect!"
 
-	def collect(self, exchange = ''):
+	def collect(self, exchange = 'topics'):
 
 		go = True
-		while go:
 
-			print "Popping item from Redis"
-			#print r.ping()
-			current = self.r.lpop(self.redis_name)
-			butler_cur = self.butler(current)
+		try:
+			while go:
 
-			category = butler_cur['section']['term']
-			slug = butler_cur['slug']
+				print "Popping item from Redis"
+				#print r.ping()
+				current = self.r.lpop(self.redis_name)
+				butler_cur = self.butler(current)
 
-			fb_data = self.fb_query(category,slug)
-			fb_data['story_id'] = current
-			fb_data['datetime'] = str(datetime.datetime.now())
+				category = butler_cur['section']['term']
+				slug = butler_cur['slug']
 
-			print "Current:"
-			print str(fb_data)
+				fb_data = self.fb_query(category,slug)
+				fb_data['story_id'] = current
+				fb_data['datetime'] = str(datetime.datetime.now())
 
-			print "Sending message to RabbitMQ..."
-			self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
+				print "Current:"
+				print json.dumps(fb_data)
 
-			self.r.rpushx(redis_name,current)
-			print "Item pushed back to Redis\n"
-			time.sleep(2)
+				print "Sending message to RabbitMQ..."
+				#fake = json.dumps({"key":1, "nope":2})
+				#print fake
+				#print exchange
+				self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
 
-		connection.close()
+				self.r.rpushx(redis_name,current)
+				print "Item pushed back to Redis\n"
+				time.sleep(2)
+		
+		except (KeyboardInterrupt, SystemExit, ValueError):
+			connection.close()
 
 if __name__ == '__main__':
+	
 	redis_name = 'test_ids'
 	rab_name = 'events.share.accounts.fb'
 
 	test = fbcounter(redis_name, rab_name)
-	print test.redis_name
-	test.collect('topics')
+	test.collect()
 
 
 
