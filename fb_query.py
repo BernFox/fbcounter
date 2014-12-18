@@ -27,6 +27,7 @@ class fbcounter():
 	connection = pika.BlockingConnection(pika.URLParameters(rabbit))
 	channel = connection.channel()
 	logging.basicConfig()
+	logger = logging.getLogger(__name__)
 
 	#Uncomment the two lines below for testing, comment out the two lines after that get values from env variables
 	#redis_host = 'dover.somespider.com'
@@ -55,7 +56,9 @@ class fbcounter():
 			send_data = {key:data[key] for key in self.fb_items}
 			return send_data
 		else:
-			print "List has length longer than 1, please inspect!"
+			#print "List has length longer than 1, please inspect!"
+			logger.warning("List has length longer than 1, please inspect!")
+			logger.debug(json.dumps(fb_data))
 
 	def collect(self, exchange = 'topics'):
 
@@ -64,7 +67,7 @@ class fbcounter():
 		try:
 			while go:
 
-				print "Popping item from Redis"
+				#print "Popping item from Redis"
 				#print r.ping()
 				current = self.r.lpop(self.redis_name)
 				butler_cur = self.butler(current)
@@ -73,27 +76,29 @@ class fbcounter():
 				slug = butler_cur['slug']
 
 				fb_data = self.fb_query(category,slug)
-				fb_data['story_id'] = current
+				fb_data['story'] = current
 				fb_data['datetime'] = str(datetime.datetime.now())
 
-				print "Current:"
-				print json.dumps(fb_data)
+				#print "Current:"
+				logger.debug(json.dumps(fb_data))
 
-				print "Sending message to RabbitMQ..."
-				#fake = json.dumps({"key":1, "nope":2})
-				#print fake
-				#print exchange
+				#print "Sending message to RabbitMQ..."
 				self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
 
 				self.r.rpushx(redis_name,current)
-				print "Item pushed back to Redis\n"
+				#print "Item pushed back to Redis\n"
 				time.sleep(2)
 		
 		except (KeyboardInterrupt, SystemExit, ValueError, Exception):
+			self.logger.exception("Critical error! exiting while loop...")
 			go = False
-			connection.close()
+			self.connection.close()
 
 if __name__ == '__main__':
+
+	log_format = (' %(levelname) -10s %(asctime)s %(name) -30s %(funcName) ' +
+                  '-30s %(lineno) -5d: %(message)s')
+	logging.basicConfig(filename=os.getenv('LOGFILE'), format=log_format, level=os.getenv('LOGLEVEL'))
 	
 	redis_name = 'test_ids'
 	rab_name = 'events.share.accounts.fb'
