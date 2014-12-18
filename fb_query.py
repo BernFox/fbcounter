@@ -57,8 +57,8 @@ class fbcounter():
 			return send_data
 		else:
 			#print "List has length longer than 1, please inspect!"
-			logger.warning("List has length longer than 1, please inspect!")
-			logger.debug(json.dumps(fb_data))
+			self.logger.warning("List has length longer than 1, please inspect!")
+			self.logger.debug(json.dumps(fb_data))
 
 	def collect(self, exchange = 'topics'):
 
@@ -80,7 +80,7 @@ class fbcounter():
 				fb_data['datetime'] = str(datetime.datetime.now())
 
 				#print "Current:"
-				logger.debug(json.dumps(fb_data))
+				self.logger.debug(json.dumps(fb_data))
 
 				#print "Sending message to RabbitMQ..."
 				self.channel.basic_publish(exchange=exchange, routing_key=self.rab_name, body=json.dumps(fb_data))
