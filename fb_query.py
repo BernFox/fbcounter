@@ -46,7 +46,7 @@ class fbcounter():
 		
 
 	def butler(self, cur_id):
-		return requests.get("http://butler.cafe.com/stories/{}/draft?user=fbcounter".format(cur_id)).json()
+		return requests.get("{}/stories/{}/draft?user=fbcounter".format(os.environ['BUTLER_URI'],cur_id)).json()
 
 	def fb_query(self, cat, slug):
 
