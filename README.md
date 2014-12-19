@@ -22,3 +22,26 @@ This must be done or else this will just stack up connections to RabbitMQ, and o
 max connections have been made, new connections will be denied. 
 
 -Removed the env directory, you'll need this to test locally. Or you can uncomment some lines in the code. 
+
+
+
+
+
+
+Running the fbrsscounter.py script 
+==================================
+This script gets facebook data for all entries in a given rss feed, then outputs the data as a csv. 
+Run the script like this:
+
+./fbrsscounter.py [rss feed url] [output file name]
+
+Example
+-------
+
+./fbrsscounter.py http://feeds.abcnews.com/abcnews/topstories abc_test
+
+
+Notes
+-----
+
+When you specify the output file name, leave out ".csv", the script does it for you.
