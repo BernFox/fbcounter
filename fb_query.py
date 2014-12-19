@@ -79,6 +79,7 @@ class fbcounter():
 					fb_data = self.fb_query(category,slug)
 					fb_data['story'] = current
 					fb_data['datetime'] = str(datetime.datetime.now())
+					fb_data['user'] = 'fbcounter'
 
 					#print "Current:"
 					#print json.dumps(fb_data)
