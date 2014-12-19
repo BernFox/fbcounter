@@ -42,7 +42,6 @@ class fbcounter():
 		
 		self.redis_name = red_name
 		self.rab_name = rab_name
-		#self.channel.queue_declare(queue=rab_name)
 		
 
 	def butler(self, cur_id):
@@ -60,7 +59,7 @@ class fbcounter():
 			self.logger.warning("List has length longer than 1, please inspect!")
 			self.logger.debug(json.dumps(fb_data))
 
-	def collect(self, exchange = 'topics'):
+	def collect(self, exchange = 'topics', secs = 2):
 
 		go = True
 
@@ -81,8 +80,8 @@ class fbcounter():
 					fb_data['story'] = current
 					fb_data['datetime'] = str(datetime.datetime.now())
 
-					print "Current:"
-					print json.dumps(fb_data)
+					#print "Current:"
+					#print json.dumps(fb_data)
 					self.logger.debug(json.dumps(fb_data))
 
 					#print "Sending message to RabbitMQ..."
@@ -90,7 +89,7 @@ class fbcounter():
 
 					#self.r.rpushx(redis_name,current)
 					#print "Item pushed back to Redis\n"
-					time.sleep(2)
+					time.sleep(secs)
 				else:
 					self.logger.info("Redis queue is empty!")
 		
